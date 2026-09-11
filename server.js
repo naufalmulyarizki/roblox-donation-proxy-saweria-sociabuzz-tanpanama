@@ -12,20 +12,23 @@ app.use(express.json());
 const CONFIG = {
     // Roblox Open Cloud API Key (buat di https://create.roblox.com/credentials)
     // Pastikan API Key punya permission: messaging-service:publish
-    ROBLOX_API_KEY: process.env.ROBLOX_API_KEY,
+    ROBLOX_API_KEY: (process.env.ROBLOX_API_KEY || '').trim(),
 
     // Universe ID dari game kamu (bukan Place ID!)
-    UNIVERSE_ID: process.env.UNIVERSE_ID,
+    UNIVERSE_ID: (process.env.UNIVERSE_ID || '').trim(),
 
     // Topic name untuk MessagingService (harus sama dengan di Roblox script)
-    MESSAGING_TOPIC: process.env.MESSAGING_TOPIC || 'DonationNotif'
+    MESSAGING_TOPIC: (process.env.MESSAGING_TOPIC || 'DonationNotif').trim()
 };
 
 const missingConfig = ['ROBLOX_API_KEY', 'UNIVERSE_ID'].filter((key) => !CONFIG[key]);
 if (missingConfig.length > 0) {
     console.error(`[CONFIG] ❌ Environment variable belum di-set: ${missingConfig.join(', ')}`);
+    // Hanya nama variabel yang di-log, bukan nilainya.
+    console.error('[CONFIG] Variable yang terbaca:', Object.keys(process.env).sort().join(', '));
     process.exit(1);
 }
+
 
 // ============================================
 // ROBLOX MESSAGING SERVICE API - DIRECT SEND
